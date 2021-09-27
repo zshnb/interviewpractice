@@ -20,7 +20,6 @@ public class BitMapTest extends BaseTest {
     private RedisTemplate<String, Serializable> redisTemplate;
     int userId = 1;
     int secondUserId = 2;
-    int thirdUserId = 3;
 
     @BeforeEach
     public void beforeSetUp() {
@@ -49,7 +48,19 @@ public class BitMapTest extends BaseTest {
     }
 
     @Test
-    public void countContinuousSignUsers() {
+    public void longestContinuousSignInMonthUsers() {
+        mockSign();
+        int result = bitMap.countContinuousInMonth(userId, 9);
+        assertThat(result).isEqualTo(5);
+    }
 
+    private void mockSign() {
+        IntStream.range(1, 4).forEach(it -> {
+            bitMap.sign(userId, LocalDate.of(2021, 9, it));
+        });
+
+        IntStream.range(10, 15).forEach(it -> {
+            bitMap.sign(userId, LocalDate.of(2021, 9, it));
+        });
     }
 }
