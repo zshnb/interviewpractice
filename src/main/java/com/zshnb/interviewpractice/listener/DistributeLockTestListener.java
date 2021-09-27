@@ -15,17 +15,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-@Component
+//@Component
 public class DistributeLockTestListener implements ApplicationListener<ApplicationReadyEvent> {
-    @Autowired
-    private DistributeLock distributeLock;
-
-    @Autowired
-    private RedisTemplate<String, Serializable> redisTemplate;
-
-    private ThreadLocal<Long> threadLocal = new ThreadLocal<>();
-
+    private final DistributeLock distributeLock;
+    private final RedisTemplate<String, Serializable> redisTemplate;
+    private final ThreadLocal<Long> threadLocal = new ThreadLocal<>();
     private static int count = 10;
+
+    public DistributeLockTestListener(DistributeLock distributeLock, RedisTemplate<String, Serializable> redisTemplate) {
+        this.distributeLock = distributeLock;
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
