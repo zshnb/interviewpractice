@@ -1,23 +1,20 @@
 package com.zshnb.interviewpractice.redis;
 
 import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Locale;
 
 @Component
 public class BitMap {
     private final String keyFormat = "sign:%d:%s";
-    private final RedisTemplate<String, Serializable> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    public BitMap(RedisTemplate<String, Serializable> redisTemplate) {
+    public BitMap(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -41,7 +38,7 @@ public class BitMap {
     public int countContinuousInMonth(int userId, int month) {
         String date = DateTimeFormatter.ofPattern("yyyyMM", Locale.CHINA).format(LocalDate.of(LocalDate.now().getYear(), month, 1));
         String key = String.format(keyFormat, userId, date);
-        byte[] bytes = ((String) redisTemplate.opsForValue().get(key)).getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = redisTemplate.opsForValue().get(key).getBytes(StandardCharsets.UTF_8);
         StringBuilder bits = new StringBuilder();
         for (byte aByte : bytes) {
             bits.append(byteToBit(aByte));
