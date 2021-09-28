@@ -31,3 +31,5 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
+        env:
+          SPRING_REDIS_HOST: redis
