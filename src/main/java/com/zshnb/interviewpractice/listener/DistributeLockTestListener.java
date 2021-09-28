@@ -1,12 +1,11 @@
 package com.zshnb.interviewpractice.listener;
 
 import com.zshnb.interviewpractice.redis.DistributeLock;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zshnb.interviewpractice.util.RandomUtil;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -20,18 +19,17 @@ public class DistributeLockTestListener implements ApplicationListener<Applicati
     private final DistributeLock distributeLock;
     private final RedisTemplate<String, Serializable> redisTemplate;
     private final ThreadLocal<Long> threadLocal = new ThreadLocal<>();
+    private final RandomUtil randomUtil;
     private static int count = 10;
 
-    public DistributeLockTestListener(DistributeLock distributeLock, RedisTemplate<String, Serializable> redisTemplate) {
+    public DistributeLockTestListener(DistributeLock distributeLock, RedisTemplate<String, Serializable> redisTemplate, RandomUtil randomUtil) {
         this.distributeLock = distributeLock;
         this.redisTemplate = redisTemplate;
+        this.randomUtil = randomUtil;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
-        Random random = new Random();
-        int max = 5000;
-        int min = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         IntStream.range(0, 8).forEach(it -> {
             String name = String.format("thread-%d", it);
@@ -39,7 +37,7 @@ public class DistributeLockTestListener implements ApplicationListener<Applicati
                 while (true) {
                     threadLocal.set(System.currentTimeMillis());
                     if (distributeLock.lock("key", threadLocal.get())) {
-                        int millis = random.nextInt(max) % (max - min + 1) + min;
+                        int millis = randomUtil.getNumber(1000, 5000);
                         System.out.printf("%s get lock, execute time: %d\n", name, millis);
                         try {
                             Thread.sleep(millis);

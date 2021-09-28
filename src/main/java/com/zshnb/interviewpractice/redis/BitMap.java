@@ -1,5 +1,6 @@
 package com.zshnb.interviewpractice.redis;
 
+import com.zshnb.interviewpractice.util.BitUtil;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -13,9 +14,11 @@ import java.util.Locale;
 public class BitMap {
     private final String keyFormat = "sign:%d:%s";
     private final StringRedisTemplate redisTemplate;
+    private final BitUtil bitUtil;
 
-    public BitMap(StringRedisTemplate redisTemplate) {
+    public BitMap(StringRedisTemplate redisTemplate, BitUtil bitUtil) {
         this.redisTemplate = redisTemplate;
+        this.bitUtil = bitUtil;
     }
 
     public void sign(int userId, LocalDate date) {
@@ -41,7 +44,7 @@ public class BitMap {
         byte[] bytes = redisTemplate.opsForValue().get(key).getBytes(StandardCharsets.UTF_8);
         StringBuilder bits = new StringBuilder();
         for (byte aByte : bytes) {
-            bits.append(byteToBit(aByte));
+            bits.append(bitUtil.byteToBit(aByte));
         }
         return countLongestContinuousSequence(bits.toString());
     }
@@ -62,16 +65,5 @@ public class BitMap {
             index++;
         }
         return max;
-    }
-
-    private String byteToBit(byte b) {
-        return "" + (byte) ((b >> 7) & 0x1) +
-            (byte) ((b >> 6) & 0x1) +
-            (byte) ((b >> 5) & 0x1) +
-            (byte) ((b >> 4) & 0x1) +
-            (byte) ((b >> 3) & 0x1) +
-            (byte) ((b >> 2) & 0x1) +
-            (byte) ((b >> 1) & 0x1) +
-            (byte) ((b) & 0x1);
     }
 }
