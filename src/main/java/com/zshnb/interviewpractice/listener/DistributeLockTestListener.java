@@ -6,6 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -17,7 +18,7 @@ import java.util.stream.IntStream;
 //@Component
 public class DistributeLockTestListener implements ApplicationListener<ApplicationReadyEvent> {
     private final DistributeLock distributeLock;
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, Long> redisTemplate;
     private final ThreadLocal<Long> threadLocal = new ThreadLocal<>();
     private final RandomUtil randomUtil;
     private static int count = 10;
@@ -38,7 +39,7 @@ public class DistributeLockTestListener implements ApplicationListener<Applicati
             executorService.execute(() -> {
                 while (true) {
                     threadLocal.set(System.currentTimeMillis());
-                    if (distributeLock.lock("key", threadLocal.get())) {
+                    if (distributeLock.lock(threadLocal.get())) {
                         int millis = randomUtil.getNumber(1000, 5000);
                         System.out.printf("%s get lock, execute time: %d\n", name, millis);
                         try {
@@ -50,7 +51,7 @@ public class DistributeLockTestListener implements ApplicationListener<Applicati
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        distributeLock.release("key", threadLocal.get());
+                        distributeLock.release(threadLocal.get());
                     }
                     threadLocal.remove();
                 }
@@ -58,7 +59,7 @@ public class DistributeLockTestListener implements ApplicationListener<Applicati
         });
     }
 
-    @Scheduled(fixedRate = 500)
+//    @Scheduled(fixedRate = 500)
     public void prolong() {
         Long expire = redisTemplate.getExpire("key", TimeUnit.SECONDS);
         if (expire != null && expire <= 1) {

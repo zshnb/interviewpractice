@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 public class DelayedDeleteCacheStrategy implements CacheConsistencyStrategy {
     private final EntityRepository entityRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
-    public static String key = "entity-cache";
 
     public DelayedDeleteCacheStrategy(EntityRepository entityRepository, RedisTemplate<String, Integer> redisTemplate) {
         this.entityRepository = entityRepository;
