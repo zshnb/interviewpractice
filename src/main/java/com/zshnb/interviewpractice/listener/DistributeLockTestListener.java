@@ -17,12 +17,14 @@ import java.util.stream.IntStream;
 //@Component
 public class DistributeLockTestListener implements ApplicationListener<ApplicationReadyEvent> {
     private final DistributeLock distributeLock;
-    private final RedisTemplate<String, Serializable> redisTemplate;
+    private final RedisTemplate redisTemplate;
     private final ThreadLocal<Long> threadLocal = new ThreadLocal<>();
     private final RandomUtil randomUtil;
     private static int count = 10;
 
-    public DistributeLockTestListener(DistributeLock distributeLock, RedisTemplate<String, Serializable> redisTemplate, RandomUtil randomUtil) {
+    public DistributeLockTestListener(DistributeLock distributeLock,
+                                      RedisTemplate<String, Long> redisTemplate,
+                                      RandomUtil randomUtil) {
         this.distributeLock = distributeLock;
         this.redisTemplate = redisTemplate;
         this.randomUtil = randomUtil;

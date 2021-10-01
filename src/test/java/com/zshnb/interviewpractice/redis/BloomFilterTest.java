@@ -10,7 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BloomFilterTest extends BaseTest {
     @Autowired
     private BloomFilter bloomFilter;
-    @BeforeEach
+
+    @Override
     public void beforeSetup() {
         bloomFilter.init(3);
         bloomFilter.add("hello world");

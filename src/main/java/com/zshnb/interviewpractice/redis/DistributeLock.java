@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class DistributeLock {
-    private final RedisTemplate<String, Serializable> redisTemplate;
+    private final RedisTemplate redisTemplate;
 
-    public DistributeLock(RedisTemplate<String, Serializable> redisTemplate) {
+    public DistributeLock(RedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

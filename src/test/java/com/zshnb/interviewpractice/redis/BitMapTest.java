@@ -16,18 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BitMapTest extends BaseTest {
     @Autowired
     private BitMap bitMap;
-    @Autowired
-    private RedisTemplate<String, Serializable> redisTemplate;
+
     int userId = 1;
     int secondUserId = 2;
-
-    @BeforeEach
-    public void beforeSetUp() {
-        redisTemplate.execute((RedisCallback<Object>) connection -> {
-            connection.flushDb();
-            return null;
-        });
-    }
 
     @Test
     public void signAndCount() {
