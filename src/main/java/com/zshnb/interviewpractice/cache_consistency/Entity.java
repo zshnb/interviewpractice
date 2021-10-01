@@ -11,6 +11,13 @@ public class Entity {
     @Column(name = "user_name")
     private String userName;
 
+    public Entity(String userName) {
+        this.userName = userName;
+    }
+
+    public Entity() {
+    }
+
     public Integer getId() {
         return id;
     }
