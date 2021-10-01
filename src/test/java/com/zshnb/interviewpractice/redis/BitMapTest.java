@@ -16,18 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BitMapTest extends BaseTest {
     @Autowired
     private BitMap bitMap;
-    @Autowired
-    private RedisTemplate<String, Serializable> redisTemplate;
+
     int userId = 1;
     int secondUserId = 2;
-
-    @BeforeEach
-    public void beforeSetUp() {
-        redisTemplate.execute((RedisCallback<Object>) connection -> {
-            connection.flushDb();
-            return null;
-        });
-    }
 
     @Test
     public void signAndCount() {
@@ -37,10 +28,10 @@ public class BitMapTest extends BaseTest {
         IntStream.range(20, 26).forEach(it -> {
             bitMap.sign(secondUserId, LocalDate.of(2021, 8, it));
         });
-        int userIdSignCount = bitMap.count(userId, LocalDate.now());
+        int userIdSignCount = bitMap.count(userId, LocalDate.of(2021, 9, 1));
         assertThat(userIdSignCount).isEqualTo(6);
 
-        int secondUserIdSignCount = bitMap.count(secondUserId, LocalDate.now());
+        int secondUserIdSignCount = bitMap.count(secondUserId, LocalDate.of(2021, 9, 1));
         assertThat(secondUserIdSignCount).isZero();
 
         secondUserIdSignCount = bitMap.count(secondUserId, LocalDate.of(2021, 8, 1));
@@ -55,12 +46,8 @@ public class BitMapTest extends BaseTest {
     }
 
     private void mockSign() {
-        IntStream.range(1, 4).forEach(it -> {
-            bitMap.sign(userId, LocalDate.of(2021, 9, it));
-        });
+        IntStream.range(1, 4).forEach(it -> bitMap.sign(userId, LocalDate.of(2021, 9, it)));
 
-        IntStream.range(10, 15).forEach(it -> {
-            bitMap.sign(userId, LocalDate.of(2021, 9, it));
-        });
+        IntStream.range(10, 15).forEach(it -> bitMap.sign(userId, LocalDate.of(2021, 9, it)));
     }
 }
