@@ -28,10 +28,10 @@ public class BitMapTest extends BaseTest {
         IntStream.range(20, 26).forEach(it -> {
             bitMap.sign(secondUserId, LocalDate.of(2021, 8, it));
         });
-        int userIdSignCount = bitMap.count(userId, LocalDate.now());
+        int userIdSignCount = bitMap.count(userId, LocalDate.of(2021, 9, 1));
         assertThat(userIdSignCount).isEqualTo(6);
 
-        int secondUserIdSignCount = bitMap.count(secondUserId, LocalDate.now());
+        int secondUserIdSignCount = bitMap.count(secondUserId, LocalDate.of(2021, 9, 1));
         assertThat(secondUserIdSignCount).isZero();
 
         secondUserIdSignCount = bitMap.count(secondUserId, LocalDate.of(2021, 8, 1));
@@ -46,12 +46,8 @@ public class BitMapTest extends BaseTest {
     }
 
     private void mockSign() {
-        IntStream.range(1, 4).forEach(it -> {
-            bitMap.sign(userId, LocalDate.of(2021, 9, it));
-        });
+        IntStream.range(1, 4).forEach(it -> bitMap.sign(userId, LocalDate.of(2021, 9, it)));
 
-        IntStream.range(10, 15).forEach(it -> {
-            bitMap.sign(userId, LocalDate.of(2021, 9, it));
-        });
+        IntStream.range(10, 15).forEach(it -> bitMap.sign(userId, LocalDate.of(2021, 9, it)));
     }
 }

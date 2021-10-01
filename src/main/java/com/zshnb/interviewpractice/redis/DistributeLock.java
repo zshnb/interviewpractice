@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class DistributeLock {
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, Long> redisTemplate;
 
-    public DistributeLock(RedisTemplate redisTemplate) {
+    public DistributeLock(RedisTemplate<String, Long> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -21,7 +21,7 @@ public class DistributeLock {
     }
 
     public void release(String key, long value) {
-        Long mayExist = (Long) redisTemplate.opsForValue().get(key);
+        Long mayExist = redisTemplate.opsForValue().get(key);
         if (mayExist != null && mayExist != value) {
             System.out.printf("%s rollback\n", Thread.currentThread().getName());
             return;

@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Configuration
 public class RedisConfig {
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+    public RedisTemplate redisTemplate(LettuceConnectionFactory connectionFactory) {
         connectionFactory.setShareNativeConnection(false);
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
 
@@ -25,10 +25,11 @@ public class RedisConfig {
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
         serializer.setObjectMapper(mapper);
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        RedisTemplate redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(serializer);
         redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 }

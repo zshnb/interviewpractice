@@ -8,10 +8,10 @@ import java.util.Set;
 
 @Component
 public class Rank {
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, User> redisTemplate;
     public static String key = "user-rank";
 
-    public Rank(RedisTemplate redisTemplate) {
+    public Rank(RedisTemplate<String, User> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
