@@ -2,9 +2,7 @@ package com.zshnb.interviewpractice.redis;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 @Component
