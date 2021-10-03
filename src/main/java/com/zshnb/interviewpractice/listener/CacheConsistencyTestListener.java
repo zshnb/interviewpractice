@@ -1,9 +1,6 @@
 package com.zshnb.interviewpractice.listener;
 
-import com.zshnb.interviewpractice.cache_consistency.DelayedDeleteCacheStrategy;
-import com.zshnb.interviewpractice.cache_consistency.EntityRepository;
-import com.zshnb.interviewpractice.cache_consistency.Runner;
-import com.zshnb.interviewpractice.cache_consistency.WithLockStrategy;
+import com.zshnb.interviewpractice.cache_consistency.*;
 import com.zshnb.interviewpractice.util.RandomUtil;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -13,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -22,14 +17,21 @@ import java.util.stream.IntStream;
 public class CacheConsistencyTestListener implements ApplicationListener<ApplicationReadyEvent> {
     private final DelayedDeleteCacheStrategy delayedDeleteCacheStrategy;
     private final WithLockStrategy withLockStrategy;
+    private final DisableInDatabaseStrategy disableInDatabaseStrategy;
     private final EntityRepository entityRepository;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final RandomUtil randomUtil;
 
-    public CacheConsistencyTestListener(DelayedDeleteCacheStrategy delayedDeleteCacheStrategy, EntityRepository entityRepository, RedisTemplate<String, Integer> redisTemplate, WithLockStrategy withLockStrategy, RandomUtil randomUtil) {
+    public CacheConsistencyTestListener(DelayedDeleteCacheStrategy delayedDeleteCacheStrategy,
+                                        EntityRepository entityRepository,
+                                        RedisTemplate<String, Integer> redisTemplate,
+                                        WithLockStrategy withLockStrategy,
+                                        DisableInDatabaseStrategy disableInDatabaseStrategy,
+                                        RandomUtil randomUtil) {
         this.delayedDeleteCacheStrategy = delayedDeleteCacheStrategy;
         this.entityRepository = entityRepository;
         this.withLockStrategy = withLockStrategy;
+        this.disableInDatabaseStrategy = disableInDatabaseStrategy;
         this.randomUtil = randomUtil;
         redisTemplate.execute((RedisCallback<Object>) connection -> {
             connection.flushDb();
@@ -41,11 +43,11 @@ public class CacheConsistencyTestListener implements ApplicationListener<Applica
     public void onApplicationEvent(ApplicationReadyEvent event) {
         // write threads;
         IntStream.range(0, 2).forEach(it -> {
-            executorService.execute(() -> readProcess(this::withLockStrategyRead));
+            executorService.execute(() -> readProcess(disableInDatabaseStrategy::write));
         });
         // read threads;
         IntStream.range(0, 7).forEach(it -> {
-            executorService.execute(() -> writeProcess(this::withLockStrategyWrite));
+            executorService.execute(() -> writeProcess(disableInDatabaseStrategy::read));
         });
     }
 
@@ -79,13 +81,5 @@ public class CacheConsistencyTestListener implements ApplicationListener<Applica
                 e.printStackTrace();
             }
         }
-    }
-
-    private void withLockStrategyRead() {
-        withLockStrategy.write();
-    }
-
-    private int withLockStrategyWrite() {
-        return withLockStrategy.read();
     }
 }
