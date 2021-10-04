@@ -18,20 +18,17 @@ public class CacheConsistencyTestListener implements ApplicationListener<Applica
     private final DelayedDeleteCacheStrategy delayedDeleteCacheStrategy;
     private final WithLockStrategy withLockStrategy;
     private final DisableInDatabaseStrategy disableInDatabaseStrategy;
+    private final BinlogStrategy binlogStrategy;
     private final EntityRepository entityRepository;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final RandomUtil randomUtil;
 
-    public CacheConsistencyTestListener(DelayedDeleteCacheStrategy delayedDeleteCacheStrategy,
-                                        EntityRepository entityRepository,
-                                        RedisTemplate<String, Integer> redisTemplate,
-                                        WithLockStrategy withLockStrategy,
-                                        DisableInDatabaseStrategy disableInDatabaseStrategy,
-                                        RandomUtil randomUtil) {
+    public CacheConsistencyTestListener(DelayedDeleteCacheStrategy delayedDeleteCacheStrategy, EntityRepository entityRepository, RedisTemplate<String, Integer> redisTemplate, WithLockStrategy withLockStrategy, DisableInDatabaseStrategy disableInDatabaseStrategy, BinlogStrategy binlogStrategy, RandomUtil randomUtil) {
         this.delayedDeleteCacheStrategy = delayedDeleteCacheStrategy;
         this.entityRepository = entityRepository;
         this.withLockStrategy = withLockStrategy;
         this.disableInDatabaseStrategy = disableInDatabaseStrategy;
+        this.binlogStrategy = binlogStrategy;
         this.randomUtil = randomUtil;
         redisTemplate.execute((RedisCallback<Object>) connection -> {
             connection.flushDb();
@@ -43,15 +40,15 @@ public class CacheConsistencyTestListener implements ApplicationListener<Applica
     public void onApplicationEvent(ApplicationReadyEvent event) {
         // write threads;
         IntStream.range(0, 2).forEach(it -> {
-            executorService.execute(() -> readProcess(disableInDatabaseStrategy::write));
+            executorService.execute(() -> writeProcess(binlogStrategy::write));
         });
         // read threads;
         IntStream.range(0, 7).forEach(it -> {
-            executorService.execute(() -> writeProcess(disableInDatabaseStrategy::read));
+            executorService.execute(() -> readProcess(binlogStrategy::read));
         });
     }
 
-    private void readProcess(Runner runner) {
+    private void writeProcess(Runner runner) {
         while (true) {
             int millis = randomUtil.getNumber(0, 2000);
             try {
@@ -63,7 +60,7 @@ public class CacheConsistencyTestListener implements ApplicationListener<Applica
         }
     }
 
-    private void writeProcess(Supplier<Integer> supplier) {
+    private void readProcess(Supplier<Integer> supplier) {
         while (true) {
             int millis = randomUtil.getNumber(0, 2000);
             try {
