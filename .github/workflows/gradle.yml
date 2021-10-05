@@ -20,6 +20,13 @@ jobs:
     services:
       redis:
         image: redis
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: db
+        ports:
+          - 3306:3306
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -34,3 +41,4 @@ jobs:
         run: ./gradlew build
         env:
           SPRING_REDIS_HOST: redis
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db
