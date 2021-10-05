@@ -38,7 +38,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew --stacktrace build
+        run: ./gradlew build
         env:
           SPRING_REDIS_HOST: redis
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db
