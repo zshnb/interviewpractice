@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-@Component
+//@Component
 public class CacheConsistencyTestListener implements ApplicationListener<ApplicationReadyEvent> {
     private final DelayedDeleteCacheStrategy delayedDeleteCacheStrategy;
     private final WithLockStrategy withLockStrategy;
