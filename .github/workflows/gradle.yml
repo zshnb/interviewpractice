@@ -27,6 +27,13 @@ jobs:
           MYSQL_DATABASE: db
         ports:
           - 3306:3306
+      elasticsearch:
+        image: elasticsearch:7.14.1
+        ports:
+          - 9200:9200
+          - 9300:9300
+        env:
+          discovery.type: single-node
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -35,6 +42,10 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
+      - name: Prepare elasticsearch data
+        run: wget https://raw.githubusercontent.com/zq2599/blog_demos/master/files/create_shakespeare_index.sh \
+          && chmod a+x create_shakespeare_index.sh \
+          && ./create_shakespeare_index.sh localhost 9200
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
