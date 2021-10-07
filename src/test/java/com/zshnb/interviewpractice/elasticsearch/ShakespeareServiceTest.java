@@ -69,7 +69,7 @@ public class ShakespeareServiceTest extends BaseTest {
     }
 
     @Test
-    public void refresh() throws InterruptedException {
+    public void withoutRefresh() throws InterruptedException {
         Query query = new NativeSearchQueryBuilder()
             .withQuery(QueryBuilders.termQuery("id", 1)).build();
         SearchHits<User> searchHits = elasticsearchRestTemplate.search(query, User.class);
@@ -77,6 +77,16 @@ public class ShakespeareServiceTest extends BaseTest {
 
         Thread.sleep(1000L);
         searchHits = elasticsearchRestTemplate.search(query, User.class);
+        assertThat(searchHits.getTotalHits()).isEqualTo(1);
+    }
+
+    @Test
+    public void withRefresh() {
+        IndexOperations indexOperations = elasticsearchRestTemplate.indexOps(User.class);
+        indexOperations.refresh();
+        Query query = new NativeSearchQueryBuilder()
+            .withQuery(QueryBuilders.termQuery("id", 1)).build();
+        SearchHits<User> searchHits = elasticsearchRestTemplate.search(query, User.class);
         assertThat(searchHits.getTotalHits()).isEqualTo(1);
     }
 }
