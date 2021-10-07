@@ -42,6 +42,11 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
+      - name: Append raw.githubcontent.com
+        run: echo 185.199.111.133 raw.githubusercontent.com >> /etc/hosts && \
+          echo 185.199.110.133 raw.githubusercontent.com >> /etc/hosts && \
+          echo 185.199.109.133 raw.githubusercontent.com >> /etc/hosts && \
+          echo 185.199.108.133 raw.githubusercontent.com >> /etc/hosts
       - name: ping
         run: ping https://raw.githubusercontent.com
       - name: Get create_index shell
