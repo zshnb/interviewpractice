@@ -60,3 +60,4 @@ jobs:
         env:
           SPRING_REDIS_HOST: redis
           SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db
+          SPRING_ELASTICSEARCH_REST_URIS: elasticsearch:9200
