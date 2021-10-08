@@ -1,6 +1,3 @@
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
 name: CI
 
 on:
@@ -47,8 +44,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
-      - name: Cat
-        run: cat /etc/hosts
       - name: Append raw.githubcontent.com
         run: |
           echo 185.199.111.133 raw.githubusercontent.com >> /etc/hosts
@@ -59,7 +54,6 @@ jobs:
         run: |
           wget https://raw.githubusercontent.com/zq2599/blog_demos/master/files/create_shakespeare_index.sh
           chmod a+x create_shakespeare_index.sh
-          ./create_shakespeare_index.sh 127.0.0.1 9200
           ./create_shakespeare_index.sh elasticsearch 9200
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
