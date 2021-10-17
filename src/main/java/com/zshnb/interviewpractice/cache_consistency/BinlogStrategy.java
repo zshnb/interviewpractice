@@ -4,14 +4,13 @@ import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
-import com.mysql.cj.log.Log;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 import java.util.List;
 
-@Component
+//@Component
 public class BinlogStrategy implements CacheConsistencyStrategy {
     private final EntityRepository entityRepository;
     private final RedisTemplate<String, Integer> redisTemplate;
