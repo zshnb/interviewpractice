@@ -13,6 +13,8 @@ public class SecretData {
     private String iv;
     @Column(name = "`key`", nullable = false)
     private String key;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    private User user;
 
     public String getIv() {
         return iv;
@@ -36,5 +38,13 @@ public class SecretData {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

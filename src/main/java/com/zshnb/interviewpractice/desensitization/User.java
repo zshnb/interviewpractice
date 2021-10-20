@@ -46,4 +46,12 @@ public class User {
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
+
+    public String getEncryptData() {
+        return encryptData;
+    }
+
+    public void setEncryptData(String encryptData) {
+        this.encryptData = encryptData;
+    }
 }
