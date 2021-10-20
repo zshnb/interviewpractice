@@ -39,7 +39,6 @@ public class SecretData {
     public void setId(Integer id) {
         this.id = id;
     }
-<<<<<<< HEAD
 
     public User getUser() {
         return user;
@@ -48,6 +47,4 @@ public class SecretData {
     public void setUser(User user) {
         this.user = user;
     }
-=======
->>>>>>> 586e97c (create encryptUtil)
 }
