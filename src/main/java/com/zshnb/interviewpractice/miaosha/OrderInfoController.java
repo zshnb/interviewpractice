@@ -13,9 +13,8 @@ public class OrderInfoController {
     }
 
     @PostMapping("/order-info")
-    public String createOrderInfo(@RequestParam String productName,
-                                  @RequestParam String userName) {
-        orderInfoService.createOrderInfo(productName, userName);
+    public String createOrderInfo(@RequestParam String productName) {
+        orderInfoService.createOrderInfo(productName);
         return "ok";
     }
 }
