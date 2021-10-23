@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'mysql:mysql-connector-java'
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.5'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
