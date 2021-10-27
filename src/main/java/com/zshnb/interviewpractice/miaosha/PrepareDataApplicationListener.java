@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class PrepareDataApplicationListener implements ApplicationListener<ApplicationReadyEvent> {
     private final RedisTemplate<String, Integer> redisTemplate;
     private final ProductRepository productRepository;
