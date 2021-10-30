@@ -5,8 +5,10 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 
 @Aspect
+@Component
 public class TraceIdAop {
     @Pointcut("execution(* com.zshnb.interviewpractice.trace_id.UserController.*(..))")
     public void execute() {}
